@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Αποθήκη Γυαλιών</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --blue-dark: #1a3a5c;
+    --blue-mid: #2563a8;
+    --blue-light: #e8f0fb;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --orange: #ea580c;
+    --orange-light: #fff7ed;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --gray-800: #1e293b;
+    --white: #ffffff;
+    --radius: 12px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.10);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-800);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--blue-dark);
+    color: white;
+    padding: 16px 20px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .header p { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+
+  /* Nav tabs */
+  .nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 62px;
+    z-index: 99;
+  }
+  .nav button {
+    flex: 1;
+    padding: 12px 4px;
+    border: none;
+    background: none;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-400);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav button.active {
+    color: var(--blue-mid);
+    border-bottom-color: var(--blue-mid);
+  }
+
+  /* Screens */
+  .screen { display: none; padding: 16px; }
+  .screen.active { display: block; }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+
+  /* Form elements */
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 6px;
+  }
+  select, input[type="number"], input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 16px;
+    color: var(--gray-800);
+    background: var(--gray-50);
+    appearance: none;
+    -webkit-appearance: none;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--blue-mid);
+    background: var(--white);
+  }
+  textarea { height: 70px; resize: none; font-family: inherit; }
+
+  /* Type toggle */
+  .type-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .type-btn {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--gray-50);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .type-btn.paradosi { color: var(--red); }
+  .type-btn.epistrofi { color: var(--green); }
+  .type-btn.paradosi.active {
+    background: var(--red-light);
+    border-color: var(--red);
+  }
+  .type-btn.epistrofi.active {
+    background: var(--green-light);
+    border-color: var(--green);
+  }
+
+  /* Submit button */
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--blue-mid);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 4px;
+  }
+  .btn-submit:active { background: var(--blue-dark); }
+  .btn-submit:disabled { background: var(--gray-400); cursor: not-allowed; }
+
+  /* Success toast */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--green);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 999;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(22,163,74,0.4);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* History list */
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-badge {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .badge-paradosi { background: var(--red-light); }
+  .badge-epistrofi { background: var(--green-light); }
+  .history-info { flex: 1; min-width: 0; }
+  .history-glass { font-size: 14px; font-weight: 700; color: var(--gray-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .history-customer { font-size: 12px; color: var(--gray-600); margin-top: 2px; }
+  .history-right { text-align: right; flex-shrink: 0; }
+  .history-qty { font-size: 16px; font-weight: 800; }
+  .qty-paradosi { color: var(--red); }
+  .qty-epistrofi { color: var(--green); }
+  .history-date { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-400);
+  }
+  .empty-icon { font-size: 40px; margin-bottom: 8px; }
+  .empty p { font-size: 14px; }
+
+  /* Export button */
+  .btn-export {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-clear {
+    width: 100%;
+    padding: 14px;
+    background: var(--white);
+    color: var(--red);
+    border: 2px solid var(--red-light);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Stats */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .stat-num { font-size: 28px; font-weight: 800; color: var(--blue-dark); }
+  .stat-label { font-size: 11px; color: var(--gray-400); margin-top: 2px; font-weight: 500; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: var(--white);
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottom-nav button {
+    flex: 1;
+    padding: 10px 4px 8px;
+    border: none;
+    background: none;
+    font-size: 10px;
+    color: var(--gray-400);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-weight: 500;
+  }
+  .bottom-nav button.active { color: var(--blue-mid); }
+  .bottom-nav button span.icon { font-size: 22px; }
+
+  .count-badge {
+    background: var(--red);
+    color: white;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    margin-left: 4px;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🫙 Αποθήκη Γυαλιών</h1>
+  <p>Καταχώρηση κινήσεων</p>
+</div>
+
+<!-- Screen: Νέα Κίνηση -->
+<div class="screen active" id="screen-new">
+  <div class="card">
+    <div class="card-title">Τύπος Κίνησης</div>
+    <div class="type-toggle">
+      <button class="type-btn paradosi active" onclick="setType('ΠΑΡΑΔΟΣΗ')">📤 ΠΑΡΑΔΟΣΗ</button>
+      <button class="type-btn epistrofi" onclick="setType('ΕΠΙΣΤΡΟΦΗ')">📥 ΕΠΙΣΤΡΟΦΗ</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Στοιχεία</div>
+    
+    <label>Γυαλί</label>
+    <select id="glass">
+      <option value="">— Επίλεξε γυαλί —</option>
+      <option value="G001|PORTAVELLA">PORTAVELLA</option>
+      <option value="G002|ΓΥΑΛΑ 8*15">ΓΥΑΛΑ 8*15</option>
+      <option value="G003|ΓΥΑΛΑ 8*20">ΓΥΑΛΑ 8*20</option>
+      <option value="G004|ΚΟΥΚΟΥΝΑΡΑ">ΚΟΥΚΟΥΝΑΡΑ</option>
+    </select>
+
+    <label>Πελάτης</label>
+    <select id="customer">
+      <option value="">— Επίλεξε πελάτη —</option>
+      <option value="P001|NALU">NALU</option>
+      <option value="P002|ONLY FOR YOU">ONLY FOR YOU</option>
+      <option value="P003|ROSSETA">ROSSETA</option>
+      <option value="P004|ATHER">ATHER</option>
+    </select>
+
+    <label>Ποσότητα</label>
+    <input type="number" id="qty" min="1" placeholder="π.χ. 50" inputmode="numeric">
+
+    <label>Σχόλια <span style="font-weight:400;color:var(--gray-400)">(προαιρετικό)</span></label>
+    <textarea id="notes" placeholder="π.χ. Παράδοση δείγματος..."></textarea>
+
+    <button class="btn-submit" onclick="submitEntry()">✓ Καταχώρηση</button>
+  </div>
+</div>
+
+<!-- Screen: Ιστορικό -->
+<div class="screen" id="screen-history">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-total">0</div>
+      <div class="stat-label">Συνολικές κινήσεις</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-today">0</div>
+      <div class="stat-label">Σήμερα</div>
+    </div>
+  </div>
+
+  <div class="card" id="history-card">
+    <div class="card-title">Πρόσφατες κινήσεις</div>
+    <div id="history-list">
+      <div class="empty">
+        <div class="empty-icon">📋</div>
+        <p>Δεν υπάρχουν κινήσεις ακόμα</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Screen: Εξαγωγή -->
+<div class="screen" id="screen-export">
+  <div class="card">
+    <div class="card-title">Εξαγωγή για Excel</div>
+    <p style="font-size:14px;color:var(--gray-600);margin-bottom:16px;line-height:1.5">
+      Κατέβασε τις κινήσεις ως CSV και άνοιξέ τo στο Excel. Μετά κάνε copy-paste τις γραμμές στο φύλλο <strong>ΚΑΤΑΧΩΡΗΣΗ</strong>.
+    </p>
+    <button class="btn-export" onclick="exportCSV()">
+      ⬇️ Λήψη CSV αρχείου
+    </button>
+    <button class="btn-clear" onclick="clearAll()">
+      🗑 Διαγραφή όλων των κινήσεων
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Οδηγίες</div>
+    <div style="font-size:13px;color:var(--gray-600);line-height:1.7">
+      <p>1️⃣ Πάτα <strong>Λήψη CSV</strong></p>
+      <p>2️⃣ Άνοιξε το αρχείο στο Excel</p>
+      <p>3️⃣ Αντέγραψε τις γραμμές</p>
+      <p>4️⃣ Επικόλλησε στο φύλλο <strong>ΚΑΤΑΧΩΡΗΣΗ</strong> στην πρώτη κενή γραμμή</p>
+      <p>5️⃣ Τα υπόλοιπα ενημερώνονται αυτόματα ✓</p>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<div class="bottom-nav">
+  <button class="active" onclick="showScreen('new', this)">
+    <span class="icon">✏️</span>
+    Νέα
+  </button>
+  <button onclick="showScreen('history', this)">
+    <span class="icon">📋</span>
+    Ιστορικό <span class="count-badge" id="count-badge" style="display:none">0</span>
+  </button>
+  <button onclick="showScreen('export', this)">
+    <span class="icon">📤</span>
+    Εξαγωγή
+  </button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  let entries = JSON.parse(localStorage.getItem('glassEntries') || '[]');
+  let currentType = 'ΠΑΡΑΔΟΣΗ';
+
+  function setType(type) {
+    currentType = type;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    if (type === 'ΠΑΡΑΔΟΣΗ') {
+      document.querySelector('.type-btn.paradosi').classList.add('active');
+    } else {
+      document.querySelector('.type-btn.epistrofi').classList.add('active');
+    }
+  }
+
+  function showScreen(name, btn) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'history') renderHistory();
+  }
+
+  function submitEntry() {
+    const glassVal = document.getElementById('glass').value;
+    const custVal = document.getElementById('customer').value;
+    const qty = parseInt(document.getElementById('qty').value);
+    const notes = document.getElementById('notes').value.trim();
+
+    if (!glassVal || !custVal || !qty || qty < 1) {
+      showToast('⚠️ Συμπλήρωσε όλα τα πεδία!', '#ea580c');
+      return;
+    }
+
+    const [glassCode, glassName] = glassVal.split('|');
+    const [custCode, custName] = custVal.split('|');
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('el-GR');
+    const timeStr = now.toLocaleTimeString('el-GR', {hour:'2-digit', minute:'2-digit'});
+
+    const entry = {
+      id: Date.now(),
+      date: dateStr,
+      time: timeStr,
+      glassCode, glassName,
+      custCode, custName,
+      type: currentType,
+      qty,
+      notes
+    };
+
+    entries.unshift(entry);
+    localStorage.setItem('glassEntries', JSON.stringify(entries));
+
+    // Reset form
+    document.getElementById('glass').value = '';
+    document.getElementById('customer').value = '';
+    document.getElementById('qty').value = '';
+    document.getElementById('notes').value = '';
+
+    updateBadge();
+    showToast('✓ Καταχωρήθηκε!', '#16a34a');
+  }
+
+  function renderHistory() {
+    const list = document.getElementById('history-list');
+    const today = new Date().toLocaleDateString('el-GR');
+    const todayCount = entries.filter(e => e.date === today).length;
+
+    document.getElementById('stat-total').textContent = entries.length;
+    document.getElementById('stat-today').textContent = todayCount;
+
+    if (entries.length === 0) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>Δεν υπάρχουν κινήσεις ακόμα</p></div>`;
+      return;
+    }
+
+    list.innerHTML = entries.slice(0, 50).map(e => `
+      <div class="history-item">
+        <div class="history-badge ${e.type === 'ΠΑΡΑΔΟΣΗ' ? 'badge-paradosi' : 'badge-epistrofi'}">
+          ${e.type === 'ΠΑΡΑΔΟΣΗ' ? '📤' : '📥'}
+        </div>
+        <div class="history-info">
+          <div class="history-glass">${e.glassName}</div>
+          <div class="history-customer">${e.custName} · ${e.date} ${e.time}</div>
+          ${e.notes ? `<div style="font-size:11px;color:var(--gray-400);margin-top:2px">${e.notes}</div>` : ''}
+        </div>
+        <div class="history-right">
+          <div class="history-qty ${e.type === 'ΠΑΡΑΔΟΣΗ' ? 'qty-paradosi' : 'qty-epistrofi'}">
+            ${e.type === 'ΠΑΡΑΔΟΣΗ' ? '-' : '+'}${e.qty}
+          </div>
+          <div class="history-date">${e.type}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function exportCSV() {
+    if (entries.length === 0) {
+      showToast('⚠️ Δεν υπάρχουν κινήσεις!', '#ea580c');
+      return;
+    }
+
+    const headers = ['Ημ/νία', 'Όνομα Γυαλιού', 'Κωδικός Γυαλιού', 'Όνομα Πελάτη', 'Κωδ. Πελάτη', 'Τύπος', 'Ποσότητα', 'Σχόλια'];
+    const rows = entries.map(e => [
+      e.date,
+      e.glassName,
+      e.glassCode,
+      e.custName,
+      e.custCode,
+      e.type,
+      e.qty,
+      e.notes || ''
+    ]);
+
+    const csv = '\uFEFF' + [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `κινησεις_${new Date().toLocaleDateString('el-GR').replace(/\//g,'-')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✓ Λήψη CSV!', '#16a34a');
+  }
+
+  function clearAll() {
+    if (!confirm('Διαγραφή ΟΛΩΝ των κινήσεων; Αυτή η ενέργεια δεν αναιρείται.')) return;
+    entries = [];
+    localStorage.setItem('glassEntries', JSON.stringify(entries));
+    updateBadge();
+    showToast('🗑 Διαγράφηκαν όλες οι κινήσεις', '#ea580c');
+  }
+
+  function updateBadge() {
+    const badge = document.getElementById('count-badge');
+    if (entries.length > 0) {
+      badge.style.display = 'inline';
+      badge.textContent = entries.length;
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function showToast(msg, color = '#16a34a') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Init
+  updateBadge();
+</script>
+</body>
+</html>
