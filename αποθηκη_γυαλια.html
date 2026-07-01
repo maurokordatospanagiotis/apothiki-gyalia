@@ -347,8 +347,13 @@
   <div class="card">
     <div class="card-title">Στοιχεία</div>
     
-    <label>Γυαλί</label>
-    <select id="glass">
+    <div id="glass-rows">
+      <div class="glass-row" id="glass-row-0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <label style="margin-bottom:0">Γυαλί 1</label>
+        </div>
+        <select class="glass-select">
+
       <option value="">— Επίλεξε γυαλί —</option>
       <option value="G001|PORTAVELLA">PORTAVELLA</option>
       <option value="G002|ΓΥΑΛΑ 8*15">ΓΥΑΛΑ 8*15</option>
@@ -363,16 +368,13 @@
       <option value="G011|ΓΥΑΛΙ 10Χ10">ΓΥΑΛΙ 10Χ10</option>
       <option value="G012|ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ">ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ</option>
       <option value="G013|ΜΑΡΜΕΛΑΔΑ 212">ΜΑΡΜΕΛΑΔΑ 212</option>
-    </select>
-
-    <label>Πελάτης</label>
-    <input type="text" id="customer-search" placeholder="Γράψε για αναζήτηση..." oninput="filterCustomers()" autocomplete="off">
-    <div id="customer-dropdown" style="display:none;background:white;border:1.5px solid var(--blue-mid);border-radius:10px;max-height:200px;overflow-y:auto;margin-top:-10px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.12);position:relative;z-index:50;">
+    
+        </select>
+        <label>Ποσότητα</label>
+        <input type="number" class="qty-input" min="1" placeholder="π.χ. 50" inputmode="numeric">
+      </div>
     </div>
-    <input type="hidden" id="customer">
-
-    <label>Ποσότητα</label>
-    <input type="number" id="qty" min="1" placeholder="π.χ. 50" inputmode="numeric">
+    <button type="button" onclick="addGlassRow()" style="width:100%;padding:10px;border:2px dashed var(--gray-200);border-radius:10px;background:none;color:var(--blue-mid);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:14px">+ Προσθήκη γυαλιού</button>
 
     <label>Σχόλια <span style="font-weight:400;color:var(--gray-400)">(προαιρετικό)</span></label>
     <textarea id="notes" placeholder="π.χ. Παράδοση δείγματος..."></textarea>
@@ -474,46 +476,105 @@
   }
 
   function submitEntry() {
-    const glassVal = document.getElementById('glass').value;
     const custVal = document.getElementById('customer').value;
-    const qty = parseInt(document.getElementById('qty').value);
     const notes = document.getElementById('notes').value.trim();
 
-    if (!glassVal || !custVal || !qty || qty < 1) {
-      showToast('⚠️ Συμπλήρωσε όλα τα πεδία!', '#ea580c');
+    if (!custVal) {
+      showToast('⚠️ Επίλεξε πελάτη!', '#ea580c');
       return;
     }
 
-    const [glassCode, glassName] = glassVal.split('|');
     const [custCode, custName] = custVal.split('|');
     const now = new Date();
     const dateStr = now.toLocaleDateString('el-GR');
     const timeStr = now.toLocaleTimeString('el-GR', {hour:'2-digit', minute:'2-digit'});
 
-    const entry = {
-      id: Date.now(),
-      date: dateStr,
-      time: timeStr,
-      glassCode, glassName,
-      custCode, custName,
-      type: currentType,
-      qty,
-      notes
-    };
+    // Collect all glass rows
+    const rows = document.querySelectorAll('.glass-row');
+    let newEntries = [];
+    let valid = true;
 
-    entries.unshift(entry);
+    rows.forEach((row, i) => {
+      const glassVal = row.querySelector('.glass-select').value;
+      const qty = parseInt(row.querySelector('.qty-input').value);
+      if (!glassVal || !qty || qty < 1) {
+        valid = false;
+        return;
+      }
+      const [glassCode, glassName] = glassVal.split('|');
+      newEntries.push({
+        id: Date.now() + i,
+        date: dateStr,
+        time: timeStr,
+        glassCode, glassName,
+        custCode, custName,
+        type: currentType,
+        qty,
+        notes
+      });
+    });
+
+    if (!valid || newEntries.length === 0) {
+      showToast('⚠️ Συμπλήρωσε γυαλί και ποσότητα!', '#ea580c');
+      return;
+    }
+
+    entries = [...newEntries, ...entries];
     localStorage.setItem('glassEntries', JSON.stringify(entries));
 
     // Reset form
-    document.getElementById('glass').value = '';
     document.getElementById('customer').value = '';
     document.getElementById('customer-search').value = '';
-    document.getElementById('qty').value = '';
     document.getElementById('notes').value = '';
     selectedCustomer = null;
 
+    // Reset glass rows to just one
+    document.getElementById('glass-rows').innerHTML = `
+      <div class="glass-row" id="glass-row-0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <label style="margin-bottom:0">Γυαλί 1</label>
+        </div>
+        <select class="glass-select">
+          <option value="">— Επίλεξε γυαλί —</option>
+          ${GLASSES.map(g => `<option value="${g.code}|${g.name}">${g.name}</option>`).join('')}
+        </select>
+        <label>Ποσότητα</label>
+        <input type="number" class="qty-input" min="1" placeholder="π.χ. 50" inputmode="numeric">
+      </div>`;
+
     updateBadge();
-    showToast('✓ Καταχωρήθηκε!', '#16a34a');
+    showToast('✓ Καταχωρήθηκαν ' + newEntries.length + ' γραμμές!', '#16a34a');
+  }
+
+  let glassRowCount = 1;
+
+  function addGlassRow() {
+    glassRowCount++;
+    const container = document.getElementById('glass-rows');
+    const div = document.createElement('div');
+    div.className = 'glass-row';
+    div.id = 'glass-row-' + glassRowCount;
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <label style="margin-bottom:0">Γυαλί ${glassRowCount}</label>
+        <button type="button" onclick="removeGlassRow('glass-row-${glassRowCount}')" style="border:none;background:none;color:var(--red);font-size:13px;font-weight:600;cursor:pointer">✕ Αφαίρεση</button>
+      </div>
+      <select class="glass-select">
+        <option value="">— Επίλεξε γυαλί —</option>
+        ${GLASSES.map(g => `<option value="${g.code}|${g.name}">${g.name}</option>`).join('')}
+      </select>
+      <label>Ποσότητα</label>
+      <input type="number" class="qty-input" min="1" placeholder="π.χ. 50" inputmode="numeric">
+    `;
+    container.appendChild(div);
+  }
+
+  function removeGlassRow(id) {
+    document.getElementById(id).remove();
+    // Renumber labels
+    document.querySelectorAll('.glass-row').forEach((row, i) => {
+      row.querySelector('label').textContent = 'Γυαλί ' + (i+1);
+    });
   }
 
   function renderHistory() {
@@ -611,7 +672,23 @@
   }
 
 
-  const CUSTOMERS = [
+  const GLASSES = [
+  {code:"G001",name:"PORTAVELLA"},
+  {code:"G002",name:"ΓΥΑΛΑ 8*15"},
+  {code:"G003",name:"ΓΥΑΛΑ 8*20"},
+  {code:"G004",name:"ΚΟΥΚΟΥΝΑΡΑ"},
+  {code:"G005",name:"ΟΥΙΣΚΙ ΠΟΤΗΡΙ"},
+  {code:"G006",name:"ΓΥΑΛΑ 8*30"},
+  {code:"G007",name:"ΚΑΠΑΚΙΑ Φ8"},
+  {code:"G008",name:"NEMO"},
+  {code:"G009",name:"VODKA"},
+  {code:"G010",name:"ΣΚΑΛΙΣΤΟ ΜΙΚΡΟ"},
+  {code:"G011",name:"ΓΥΑΛΙ 10Χ10"},
+  {code:"G012",name:"ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ"},
+  {code:"G013",name:"ΜΑΡΜΕΛΑΔΑ 212"}
+];
+
+const CUSTOMERS = [
   {code:"P001",name:"AMELIA MERCATO"},
   {code:"P002",name:"17 / ΚΡΙΚΖΩΝΗΣ"},
   {code:"P003",name:"33"},
