@@ -358,6 +358,11 @@
       <option value="G006|ΓΥΑΛΑ 8*30">ΓΥΑΛΑ 8*30</option>
       <option value="G007|ΚΑΠΑΚΙΑ Φ8">ΚΑΠΑΚΙΑ Φ8</option>
       <option value="G008|NEMO">NEMO</option>
+      <option value="G009|VODKA">VODKA</option>
+      <option value="G010|ΣΚΑΛΙΣΤΟ ΜΙΚΡΟ">ΣΚΑΛΙΣΤΟ ΜΙΚΡΟ</option>
+      <option value="G011|ΓΥΑΛΙ 10Χ10">ΓΥΑΛΙ 10Χ10</option>
+      <option value="G012|ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ">ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ</option>
+      <option value="G013|ΜΑΡΜΕΛΑΔΑ 212">ΜΑΡΜΕΛΑΔΑ 212</option>
     </select>
 
     <label>Πελάτης</label>
@@ -502,8 +507,10 @@
     // Reset form
     document.getElementById('glass').value = '';
     document.getElementById('customer').value = '';
+    document.getElementById('customer-search').value = '';
     document.getElementById('qty').value = '';
     document.getElementById('notes').value = '';
+    selectedCustomer = null;
 
     updateBadge();
     showToast('✓ Καταχωρήθηκε!', '#16a34a');
@@ -914,7 +921,24 @@
   {code:"P307",name:"ΨΑΡΟΥ / TASTE ALL (ΦΙΛΟΣ WINOLA)"},
   {code:"P308",name:"ΩΡΑΙΑ ΠΕΝΤΕΛΗ"},
   {code:"P309",name:"ONLY FOR YOU"},
-  {code:"P310",name:"ΑΒΑΝΟΓΛΟΥ"}
+  {code:"P310",name:"ΑΒΑΝΟΓΛΟΥ"},
+  {code:"P311",name:"EFI EVENTS"},
+  {code:"P312",name:"ΧΑΝΙΩΤΗΣ ΓΙΩΡΓΟΣ"},
+  {code:"P313",name:"ΚΟΝΤΟΓΙΑΝΝΗ"},
+  {code:"P314",name:"ROSSETA"},
+  {code:"P315",name:"NOVAKER ΠΕΡΙΣΤΕΡΙ"},
+  {code:"P316",name:"NOVAKER ΠΑΤΗΣΙΑ"},
+  {code:"P317",name:"BE OUR GUEST"},
+  {code:"P318",name:"ΡΟΥΜΠΕΙΔΗΣ  ΔΗΜΗΤΡΗΣ"},
+  {code:"P319",name:"ΡΟΥΜΠΕΙΔΗΣ ΤΑΣΟΣ ΜΠΑΜΠΑΣ"},
+  {code:"P320",name:"ΠΟΠΗ ΜΑΡΓΑΡΙΤΗ ΚΑΙ ΣΙΑ / P S SERVICES"},
+  {code:"P321",name:"ΠΕΡΑΧΩΡΙΤΗ EAR EVENT"},
+  {code:"P322",name:"ΑΓΓΕΛΟΣ ΑΚΡΑΤΑ (TUTTI)"},
+  {code:"P323",name:"EL CATRIN/ΜΕΞΙΚΑΝΟΣ SOUTH"},
+  {code:"P324",name:"ΦΩΤΕΙΝΗ ΞΕΝΑΚΗ LEVANDA EVENT ΤΗΝΟΣ"},
+  {code:"P325",name:"ΝΤΑΛΑΠΕΡΑΣ"},
+  {code:"P326",name:"ΜΑΘΙΟΥΔΑΚΗΣ ΑΛΙΜΟΣ"},
+  {code:"P327",name:"BEST FRIENDS /ΘΡΑΚ. 669 ΚΩΔ"}
 ];
 
   let selectedCustomer = null;
