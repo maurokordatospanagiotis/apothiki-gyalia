@@ -347,6 +347,12 @@
   <div class="card">
     <div class="card-title">Στοιχεία</div>
     
+    <label>Πελάτης</label>
+    <input type="text" id="customer-search" placeholder="Γράψε για αναζήτηση..." oninput="filterCustomers()" autocomplete="off">
+    <div id="customer-dropdown" style="display:none;background:white;border:1.5px solid var(--blue-mid);border-radius:10px;max-height:200px;overflow-y:auto;margin-top:-10px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,0.12);position:relative;z-index:50;">
+    </div>
+    <input type="hidden" id="customer">
+
     <div id="glass-rows">
       <div class="glass-row" id="glass-row-0">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
