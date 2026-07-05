@@ -377,6 +377,9 @@
       <option value="G015|ΜΑΡΜΕΛΑΔΑ ΜΕΓΑΛΗ 720">ΜΑΡΜΕΛΑΔΑ ΜΕΓΑΛΗ 720</option>
       <option value="G016|ΣΚΑΛΙΣΤΟ ΜΕΓΑΛΟ">ΣΚΑΛΙΣΤΟ ΜΕΓΑΛΟ</option>
       <option value="G017|ΠΗΛΙΝΑ ΕΡΓΟΝ">ΠΗΛΙΝΑ ΕΡΓΟΝ</option>
+      <option value="G018|ΜΑΡΜΕΛΑΔΑ 380">ΜΑΡΜΕΛΑΔΑ 380</option>
+      <option value="G019|ORCHIO 330">ORCHIO 330</option>
+      <option value="G020|ΠΟΤΗΡΙ 93102">ΠΟΤΗΡΙ 93102</option>
         </select>
         <label>Ποσότητα</label>
         <input type="number" class="qty-input" min="1" placeholder="π.χ. 50" inputmode="numeric">
@@ -495,7 +498,10 @@
 
     const [custCode, custName] = custVal.split('|');
     const now = new Date();
-    const dateStr = now.toLocaleDateString('el-GR');
+    const d = now.getDate().toString().padStart(2,'0');
+    const m = (now.getMonth()+1).toString().padStart(2,'0');
+    const y = now.getFullYear();
+    const dateStr = d + '/' + m + '/' + y;
     const timeStr = now.toLocaleTimeString('el-GR', {hour:'2-digit', minute:'2-digit'});
 
     // Collect all glass rows
@@ -716,7 +722,10 @@
   {code:"G014",name:"ΜΑΡΜΕΛΑΔΑ DECO 580"},
   {code:"G015",name:"ΜΑΡΜΕΛΑΔΑ ΜΕΓΑΛΗ 720"},
   {code:"G016",name:"ΣΚΑΛΙΣΤΟ ΜΕΓΑΛΟ"},
-  {code:"G017",name:"ΠΗΛΙΝΑ ΕΡΓΟΝ"}
+  {code:"G017",name:"ΠΗΛΙΝΑ ΕΡΓΟΝ"},
+  {code:"G018",name:"ΜΑΡΜΕΛΑΔΑ 380"},
+  {code:"G019",name:"ORCHIO 330"},
+  {code:"G020",name:"ΠΟΤΗΡΙ 93102"}
 ];
 
 const CUSTOMERS = [
@@ -1065,7 +1074,10 @@ const CUSTOMERS = [
   {code:"P343",name:"HOPE EVENTS ΚΡΕΜΜΥΔΑ"},
   {code:"P344",name:"FLOCAFE MALL/ΕΣΤΙΑΤΟΡΙΑ  ΕΛΛΕΣΤΙΑ AΕ"},
   {code:"P345",name:"ΚΡΕΜΑ GELATO"},
-  {code:"P346",name:"VILLA GRIZIO / DINE HUBE IKE"}
+  {code:"P346",name:"VILLA GRIZIO / DINE HUBE IKE"},
+  {code:"P347",name:"ΠΑΥΛΙΝΑ ΓΚΙΝΑΙΔΗ / Κτήμα Γάμου Κλεοπάτρα"},
+  {code:"P348",name:"ΤΑΒΕΡΝΑ ΑΚΡΟΠΟΛΗ"},
+  {code:"P349",name:"FLOCAFE Ν. ΕΡΥΘΡΑΙΑ/   Φ & Φ ΕΣΤΙΑ ΙΚΕ/ΠΡΟΤΥΠΟΣ ΔΙΑΧΕΙΡΗΣΗ"}
 ];
 
   let selectedCustomer = null;
