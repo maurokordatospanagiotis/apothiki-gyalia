@@ -358,8 +358,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
           <label style="margin-bottom:0">Γυαλί 1</label>
         </div>
-        <select class="glass-select">
-
+        <select class="glass-select" onchange="checkAndFetchStock()">
       <option value="">— Επίλεξε γυαλί —</option>
       <option value="G001|PORTAVELLA">PORTAVELLA</option>
       <option value="G002|ΓΥΑΛΑ 8*15">ΓΥΑΛΑ 8*15</option>
@@ -374,7 +373,10 @@
       <option value="G011|ΓΥΑΛΙ 10Χ10">ΓΥΑΛΙ 10Χ10</option>
       <option value="G012|ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ">ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ</option>
       <option value="G013|ΜΑΡΜΕΛΑΔΑ 212">ΜΑΡΜΕΛΑΔΑ 212</option>
-    
+      <option value="G014|ΜΑΡΜΕΛΑΔΑ DECO 580">ΜΑΡΜΕΛΑΔΑ DECO 580</option>
+      <option value="G015|ΜΑΡΜΕΛΑΔΑ ΜΕΓΑΛΗ 720">ΜΑΡΜΕΛΑΔΑ ΜΕΓΑΛΗ 720</option>
+      <option value="G016|ΣΚΑΛΙΣΤΟ ΜΕΓΑΛΟ">ΣΚΑΛΙΣΤΟ ΜΕΓΑΛΟ</option>
+      <option value="G017|ΠΗΛΙΝΑ ΕΡΓΟΝ">ΠΗΛΙΝΑ ΕΡΓΟΝ</option>
         </select>
         <label>Ποσότητα</label>
         <input type="number" class="qty-input" min="1" placeholder="π.χ. 50" inputmode="numeric">
@@ -382,6 +384,7 @@
     </div>
     <button type="button" onclick="addGlassRow()" style="width:100%;padding:10px;border:2px dashed var(--gray-200);border-radius:10px;background:none;color:var(--blue-mid);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:14px">+ Προσθήκη γυαλιού</button>
 
+    <div id="stock-info"></div>
     <label>Σχόλια <span style="font-weight:400;color:var(--gray-400)">(προαιρετικό)</span></label>
     <textarea id="notes" placeholder="π.χ. Παράδοση δείγματος..."></textarea>
 
@@ -552,6 +555,24 @@
     showToast('✓ Καταχωρήθηκαν ' + newEntries.length + ' γραμμές!', '#16a34a');
   }
 
+  function checkAndFetchStock() {
+    const custVal = document.getElementById('customer').value;
+    const rows = document.querySelectorAll('.glass-row');
+    if (rows.length === 1) {
+      // Only show stock when there's one glass row
+      const glassVal = rows[0].querySelector('.glass-select').value;
+      if (custVal && glassVal) {
+        const [custCode] = custVal.split('|');
+        const [glassCode] = glassVal.split('|');
+        fetchStock(custCode, glassCode);
+      } else {
+        document.getElementById('stock-info').innerHTML = '';
+      }
+    } else {
+      document.getElementById('stock-info').innerHTML = '';
+    }
+  }
+
   let glassRowCount = 1;
 
   function addGlassRow() {
@@ -691,11 +712,15 @@
   {code:"G010",name:"ΣΚΑΛΙΣΤΟ ΜΙΚΡΟ"},
   {code:"G011",name:"ΓΥΑΛΙ 10Χ10"},
   {code:"G012",name:"ΚΟΥΚΟΥΝΑΡΑ ΜΙΚΡΗ"},
-  {code:"G013",name:"ΜΑΡΜΕΛΑΔΑ 212"}
+  {code:"G013",name:"ΜΑΡΜΕΛΑΔΑ 212"},
+  {code:"G014",name:"ΜΑΡΜΕΛΑΔΑ DECO 580"},
+  {code:"G015",name:"ΜΑΡΜΕΛΑΔΑ ΜΕΓΑΛΗ 720"},
+  {code:"G016",name:"ΣΚΑΛΙΣΤΟ ΜΕΓΑΛΟ"},
+  {code:"G017",name:"ΠΗΛΙΝΑ ΕΡΓΟΝ"}
 ];
 
 const CUSTOMERS = [
-  {code:"P001",name:"AMELIA MERCATO"},
+  {code:"P001",name:"MELHIOR"},
   {code:"P002",name:"17 / ΚΡΙΚΖΩΝΗΣ"},
   {code:"P003",name:"33"},
   {code:"P004",name:"ALEGRIA ΜΑΚΡΟΠΟΥΛΟΥ ΣΤΑΥΡΟΥΛΑ"},
@@ -748,7 +773,7 @@ const CUSTOMERS = [
   {code:"P051",name:"DAL PROFFESORE"},
   {code:"P052",name:"DANK/CALIENTE"},
   {code:"P053",name:"DIA NOCHE/ΓΙΩΡΓΟΣ Φ ΠΑΠ"},
-  {code:"P054",name:"DIRTY BLONDE/ SALTY TASTE"},
+  {code:"P054",name:"FRUZATY"},
   {code:"P055",name:"DIRTY BLONDE/ SALTY TASTE /POLIS NEW AGE"},
   {code:"P056",name:"DIRTY SANSCHEZ"},
   {code:"P057",name:"DIVAN / DIVAN BROS / DAR/ SEVEN 7 7 ΜΟΝΟΠΡΟΣΩΠΗ"},
@@ -1021,7 +1046,26 @@ const CUSTOMERS = [
   {code:"P324",name:"ΦΩΤΕΙΝΗ ΞΕΝΑΚΗ LEVANDA EVENT ΤΗΝΟΣ"},
   {code:"P325",name:"ΝΤΑΛΑΠΕΡΑΣ"},
   {code:"P326",name:"ΜΑΘΙΟΥΔΑΚΗΣ ΑΛΙΜΟΣ"},
-  {code:"P327",name:"BEST FRIENDS /ΘΡΑΚ. 669 ΚΩΔ"}
+  {code:"P327",name:"BEST FRIENDS /ΘΡΑΚ. 669 ΚΩΔ"},
+  {code:"P328",name:"BON BON STUDIO"},
+  {code:"P329",name:"NARKISSOS FLOWERS"},
+  {code:"P330",name:"ΚΡΩΠΙΑΣ ΓΗ/ΒΟΤΑΝΙΚΟ ΠΑΡΚΟ"},
+  {code:"P331",name:"ΑΝΤΟΥΑΝΕΤΑ"},
+  {code:"P332",name:"ΑΡΓΥΡΩ ΣΠΕΤΣΕΣ"},
+  {code:"P333",name:"FLOWERS BONSAI"},
+  {code:"P334",name:"ΠΕΤΡΟΠΟΥΛΟΥ ΚΑΤΕΡΙΝΑ"},
+  {code:"P335",name:"ΖΕΡΗ ΙΛΙΟΝ /ΣΚΕΡΛΟΣ ΧΡΗΣΤΟΣ ΓΕΩΡΓΙΟΣ"},
+  {code:"P336",name:"MA CHE VOUI/REFOOD"},
+  {code:"P337",name:"KUKO/FIGO"},
+  {code:"P338",name:"BASE"},
+  {code:"P339",name:"ΠΑΛΜΟΣ ΦΙΛΛΙΠΟΠΟΥΛΟΣ"},
+  {code:"P340",name:"EVENTIONS ΓΕΩΡΓΙΑ ΠΕΡΟΥ"},
+  {code:"P341",name:"ΧΑΛΙΑΣΟΥ / MARRIAGE IN STYLE"},
+  {code:"P342",name:"MAKE HAPPY MEMORIES"},
+  {code:"P343",name:"HOPE EVENTS ΚΡΕΜΜΥΔΑ"},
+  {code:"P344",name:"FLOCAFE MALL/ΕΣΤΙΑΤΟΡΙΑ  ΕΛΛΕΣΤΙΑ AΕ"},
+  {code:"P345",name:"ΚΡΕΜΑ GELATO"},
+  {code:"P346",name:"VILLA GRIZIO / DINE HUBE IKE"}
 ];
 
   let selectedCustomer = null;
@@ -1052,6 +1096,7 @@ const CUSTOMERS = [
     document.getElementById('customer').value = code + '|' + name;
     document.getElementById('customer-dropdown').style.display = 'none';
     selectedCustomer = {code, name};
+    checkAndFetchStock();
   }
 
   // Close dropdown when clicking outside
@@ -1060,6 +1105,33 @@ const CUSTOMERS = [
       document.getElementById('customer-dropdown').style.display = 'none';
     }
   });
+
+
+  // Supabase config
+  const SUPABASE_URL = 'https://htzkhzpsfryfpkhmtdgq.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0emtoenBzZnJ5ZnBraG10ZGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MjUzOTgsImV4cCI6MjA5ODUwMTM5OH0.nRVAnngM0WXTgjPNqUKCsJT5UYWaezhZaOf2T0NVovQ';
+
+  async function fetchStock(custCode, glassCode) {
+    if (!custCode || !glassCode) return;
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/apothema?customer_code=eq.${custCode}&glass_code=eq.${glassCode}&select=quantity`,
+        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+      );
+      const data = await res.json();
+      const stockDiv = document.getElementById('stock-info');
+      if (data && data.length > 0) {
+        const qty = data[0].quantity;
+        const color = qty > 0 ? 'var(--red)' : 'var(--green)';
+        const icon = qty > 0 ? '⚠️' : '✓';
+        stockDiv.innerHTML = `<div style="padding:10px 14px;border-radius:10px;background:${qty > 0 ? 'var(--red-light)' : 'var(--green-light)'};margin-bottom:14px;font-size:14px;font-weight:600;color:${color}">${icon} Κρατάει τώρα: <strong>${qty} τεμ.</strong></div>`;
+      } else {
+        stockDiv.innerHTML = `<div style="padding:10px 14px;border-radius:10px;background:var(--gray-100);margin-bottom:14px;font-size:13px;color:var(--gray-400)">Δεν βρέθηκε απόθεμα</div>`;
+      }
+    } catch(e) {
+      console.error('Stock fetch error:', e);
+    }
+  }
 
   // Init
   updateBadge();
