@@ -380,6 +380,8 @@
       <option value="G018|ΜΑΡΜΕΛΑΔΑ 380">ΜΑΡΜΕΛΑΔΑ 380</option>
       <option value="G019|ORCHIO 330">ORCHIO 330</option>
       <option value="G020|ΠΟΤΗΡΙ 93102">ΠΟΤΗΡΙ 93102</option>
+      <option value="G021|ΣΦΗΝΑΚΙΑ">ΣΦΗΝΑΚΙΑ</option>
+      <option value="G022|ΠΟΤΗΡΙ BEER TIME">ΠΟΤΗΡΙ BEER TIME</option>
         </select>
         <label>Ποσότητα</label>
         <input type="number" class="qty-input" min="1" placeholder="π.χ. 50" inputmode="numeric">
@@ -725,7 +727,9 @@
   {code:"G017",name:"ΠΗΛΙΝΑ ΕΡΓΟΝ"},
   {code:"G018",name:"ΜΑΡΜΕΛΑΔΑ 380"},
   {code:"G019",name:"ORCHIO 330"},
-  {code:"G020",name:"ΠΟΤΗΡΙ 93102"}
+  {code:"G020",name:"ΠΟΤΗΡΙ 93102"},
+  {code:"G021",name:"ΣΦΗΝΑΚΙΑ"},
+  {code:"G022",name:"ΠΟΤΗΡΙ BEER TIME"}
 ];
 
 const CUSTOMERS = [
@@ -1077,7 +1081,49 @@ const CUSTOMERS = [
   {code:"P346",name:"VILLA GRIZIO / DINE HUBE IKE"},
   {code:"P347",name:"ΠΑΥΛΙΝΑ ΓΚΙΝΑΙΔΗ / Κτήμα Γάμου Κλεοπάτρα"},
   {code:"P348",name:"ΤΑΒΕΡΝΑ ΑΚΡΟΠΟΛΗ"},
-  {code:"P349",name:"FLOCAFE Ν. ΕΡΥΘΡΑΙΑ/   Φ & Φ ΕΣΤΙΑ ΙΚΕ/ΠΡΟΤΥΠΟΣ ΔΙΑΧΕΙΡΗΣΗ"}
+  {code:"P349",name:"FLOCAFE Ν. ΕΡΥΘΡΑΙΑ/   Φ & Φ ΕΣΤΙΑ ΙΚΕ/ΠΡΟΤΥΠΟΣ ΔΙΑΧΕΙΡΗΣΗ"},
+  {code:"P350",name:"ALL ABOUT EVENTS"},
+  {code:"P351",name:"CAPE ΣΟΥΝΙΟ / EAST COAST/ΕΤΑΙΡΕΙΑ ΔΙΑΧΕΙΡΙΣΗΣ ΕΦΟΔΙΑΣΜΟΥ"},
+  {code:"P352",name:"CLUB SERVICE"},
+  {code:"P353",name:"ΑΥΓΕΡΙΝΟΥ ΛΕΥΚΗ /ELITE EVENTS SERVICES"},
+  {code:"P354",name:"FLORANCE"},
+  {code:"P355",name:"GOLF PRIVE ΓΛΥΦΑΔΑ"},
+  {code:"P356",name:"GRECA FLORA / ΜΠΕΓΝΗ ΦΛΩΡΑ"},
+  {code:"P357",name:"HAI EVENTS ΜΑΓΔΑ"},
+  {code:"P358",name:"IRILENAS CREATIONS / ΕΙΡΗΛΕΝΑ ΠΑΠΑΙΩΑΝΝΟΥ ΕΙΡΗΝΗ"},
+  {code:"P359",name:"NEW LEAF"},
+  {code:"P360",name:"NOVA ΠΕΝΝΑ / CRAFT BOX / ΓΕΩΡΓΟΥΤΗ ΜΑΝΩΛΗ"},
+  {code:"P361",name:"UNIQUE FLOWERS ΔΡΑΚΟΠΟΥΛΟΣ"},
+  {code:"P362",name:"ZATU EVENTS ΖΑΓΟΡΙΤΟΥ ΡΕΓΓΙΝΑ"},
+  {code:"P363",name:"ANTHEA ΑΓΓΕΛΙΚΗ ΠΑΠΑΖΗΣΗ ΝΕΑ ΣΜΥΡΝΗ / ΜΙΣΑΗΛΙΔΗΣ ΔΗΜΟΣΘΕΝΗΣ"},
+  {code:"P364",name:"ΑΤΑΡΤ ΑΝΘΟΠΩΛΕΙΟ"},
+  {code:"P365",name:"ΓΕΡΟΤΣΟΥ ΒΑΣΙΛΙΚΗ"},
+  {code:"P366",name:"ΓΙΑΝΝΕΝΑΚΗ - ΜΑΤΣΟΥΚΑ DORIAN FLOWERS"},
+  {code:"P367",name:"ΔΕΡΤΟΥΖΟΣ / LES FLEURISTES"},
+  {code:"P368",name:"ΗΡΙΔΑΝΟΣ ΑΦΘΟΝΙΑΔΟΥ ΕΥΑΓΓΕΛΙΑ"},
+  {code:"P369",name:"ΚΗΠΟΣ"},
+  {code:"P370",name:"ΚΟΥΜΙΩΤΗ ΕΛΙΝΑ / COOKOOBAROI"},
+  {code:"P371",name:"ΚΤΗΜΑ ΑΡΙΑΔΝΗ"},
+  {code:"P372",name:"ΚΤΗΜΑ ΓΡΕΓΟΥ"},
+  {code:"P373",name:"ΚΤΗΜΑ ΜΥΡΡΙΝΟΥΣ ΝΑΣΙΑ"},
+  {code:"P374",name:"ΚΤΗΜΑ ΟΝΕΙΡΩΝ DREAMS IKE"},
+  {code:"P375",name:"ΚΤΗΜΑ ΦΑΙΔΡΑ"},
+  {code:"P376",name:"ΛΟΥΒΑΡΗ ΓΙΑΝΝΑ"},
+  {code:"P377",name:"ΛΥΜΠΕΡΟΠΟΥΛΟΥ ΣΙΛΒΑΝΑ"},
+  {code:"P378",name:"ΜΑΘΙΟΥΔΑΚΗΣ FIRST DAY  ΦΑΛΗΡΟ"},
+  {code:"P379",name:"ΜΑΡΟΥΛΙΔΟΥ / INEVENTIVE CREATIVE"},
+  {code:"P380",name:"ΜΟΥΣΕΙΟ ΟΙΝΟΥ /ΑΜΠΕΛΩΝΕΣ ΜΑΡΚΟΥ LATORIA"},
+  {code:"P381",name:"ΜΟΥΣΤΟΓΙΑΝΝΗ ΓΙΩΤΑ ΠΑΡΟΣ"},
+  {code:"P382",name:"ΜΠΑΡΜΠΑΚΗΣ FLOWER"},
+  {code:"P383",name:"ΜΠΡΑΙΜΙΩΤΗ"},
+  {code:"P384",name:"ΡΑΓΚΟΥΣΗ ΣΤΕΦΑΝΙΑ PLANER"},
+  {code:"P385",name:"ΡΟΥΜΠΕΙΔΗΣ  ΙΑΚΩΒΟΣ"},
+  {code:"P386",name:"ΣΑΒΒΟΠΟΥΛΟΥ ΝΑΝΤΙΑ WHITE GRACE PLANS"},
+  {code:"P387",name:"ΣΚΥΛΙΤΣΗ"},
+  {code:"P388",name:"ΤΣΑΡΟΠΟΥΛΟΣ"},
+  {code:"P389",name:"MAKE MY DREAM"},
+  {code:"P390",name:"Η ΑΥΛΗ ΤΗΣ ΥΔΗΛΗΣ"},
+  {code:"P391",name:"ΙΩΑΝΝΑ ΑΡΑΧΩΒΑ"}
 ];
 
   let selectedCustomer = null;
